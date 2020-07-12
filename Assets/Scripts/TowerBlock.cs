@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TowerBlock : MonoBehaviour
 {
+    public Color color;
+
     private GameObject child;
     private void Awake()
     {
@@ -77,5 +79,17 @@ public class TowerBlock : MonoBehaviour
     {
         GetComponent<MeshRenderer>().material.color = newColor;
         child.GetComponent<MeshRenderer>().material.color = newColor;
+    }
+
+    public void Enable()
+    {
+        SetColor(color);
+        GetComponent<Rigidbody>().isKinematic = false;
+    }
+
+    public void Disable()
+    {
+        SetColor(Color.gray);
+        GetComponent<Rigidbody>().isKinematic = true;
     }
 }
