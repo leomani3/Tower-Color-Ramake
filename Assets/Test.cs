@@ -20,7 +20,7 @@ public class Test : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.N))
         {
-            StartCoroutine(block.PropagateColor(Color.blue));
+            StartCoroutine(block.PropagateColor(Color.green));
         }
     }
 }

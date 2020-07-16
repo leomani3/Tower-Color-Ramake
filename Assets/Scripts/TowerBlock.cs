@@ -14,7 +14,7 @@ public class TowerBlock : MonoBehaviour
         child = transform.GetChild(0).gameObject; //I created a clone of the TowerBlock as a child without the collider, rb, etc... juste to animate without breaking the physic
     }
 
-    public IEnumerator PropagateColor(Color color)
+    public IEnumerator PropagateColor(Color c)
     {
         //save the current color of the object
         Color currentColor = GetColor();
@@ -23,7 +23,7 @@ public class TowerBlock : MonoBehaviour
         //Animation
         child.GetComponent<Animator>().SetTrigger("ChangeColor");
         //Set the new color of the current object 
-        Colorize(color);
+        SetColor (c);
 
         yield return new WaitForSeconds(0.05f);
 
@@ -33,7 +33,7 @@ public class TowerBlock : MonoBehaviour
             TowerBlock neighbor = col.GetComponent<TowerBlock>();
             if (neighbor.GetColor() == currentColor && col.gameObject != gameObject)
             {
-                StartCoroutine(neighbor.PropagateColor(color));
+                StartCoroutine(neighbor.PropagateColor(c));
             }
         }
     }

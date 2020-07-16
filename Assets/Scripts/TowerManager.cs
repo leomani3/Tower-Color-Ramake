@@ -12,6 +12,7 @@ public class TowerManager : MonoBehaviour
     private Color[] colors;
 
     private float timeCpt = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +22,8 @@ public class TowerManager : MonoBehaviour
         {
             colors[i] = Color.HSVToRGB(Random.Range(0, 0.9f), 1, 1);
         }
+        //pass those colors reference to the ball thrower
+        FindObjectOfType<BallThrower>().Setup(colors);
 
         currentLowestActivatedLine = lines.Count - playZoneLength;
 
