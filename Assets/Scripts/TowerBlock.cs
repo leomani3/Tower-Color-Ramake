@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TowerBlock : MonoBehaviour
 {
     public Color color;
+    public Action onDestroy;
 
     private GameObject child;
     private void Awake()
@@ -65,6 +67,7 @@ public class TowerBlock : MonoBehaviour
     /// </summary>
     public void SoftDestroy()
     {
+        onDestroy?.Invoke();
         GetComponent<MeshRenderer>().enabled = false;
         GetComponent<MeshCollider>().enabled = false;
         transform.GetChild(0).gameObject.SetActive(false);
@@ -84,12 +87,12 @@ public class TowerBlock : MonoBehaviour
     public void Enable()
     {
         SetColor(color);
-        GetComponent<Rigidbody>().isKinematic = false;
+        GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
     }
 
     public void Disable()
     {
         SetColor(Color.gray);
-        GetComponent<Rigidbody>().isKinematic = true;
+        GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
     }
 }

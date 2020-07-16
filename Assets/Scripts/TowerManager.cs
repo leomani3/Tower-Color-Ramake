@@ -5,7 +5,7 @@ using UnityEngine;
 public class TowerManager : MonoBehaviour
 {
     public int playZoneLength;
-    public List<GameObject> lines;
+    public List<TowerLine> lines;
 
     private int currentLowestActivatedLine;
 
@@ -18,7 +18,7 @@ public class TowerManager : MonoBehaviour
         for (int i = 0; i < lines.Count; i++)
         {
             //represents all the lines below the playzone. Disaable them.
-            if (i < currentLowestActivatedLine) 
+            if (i < currentLowestActivatedLine)
             {
                 foreach (TowerBlock towerBlock in lines[i].GetComponentsInChildren<TowerBlock>())
                 {
@@ -32,6 +32,9 @@ public class TowerManager : MonoBehaviour
                     towerBlock.Enable();
                 }
             }
+
+            //subscribe to the event fired by a line whenever it is empty in order to update the play zone
+            lines[i].onEmpty += LowerPlayZone;
         }
     }
 

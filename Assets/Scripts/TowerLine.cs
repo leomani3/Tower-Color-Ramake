@@ -5,28 +5,36 @@ using UnityEngine;
 
 public class TowerLine : MonoBehaviour
 {
-    private int towerBlockInside = 0;
+    public Action onEmpty;
+
+    private int blockCount = 0;
     private TowerManager towerManager;
     private bool triggered = false;
 
-    private void Awake()
+    private void Start()
     {
-        towerManager = FindObjectOfType<TowerManager>();
+        foreach (TowerBlock towerBlock in GetComponentsInChildren<TowerBlock>())
+        {
+            towerBlock.onDestroy += DecreaseBlockCount;
+        }
     }
-
     private void OnTriggerEnter(Collider other)
     {
-        towerBlockInside++;
+        blockCount++;
+    }
+
+    public void DecreaseBlockCount()
+    {
+        blockCount--;
+        if (blockCount == 0 && !triggered)
+        {
+            triggered = true;
+            onEmpty?.Invoke();
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        towerBlockInside--;
-        if (towerBlockInside == 0 && !triggered)
-        {
-            Debug.Log(name + " : empty");
-            triggered = true;
-            towerManager.LowerPlayZone();
-        }
+        DecreaseBlockCount();
     }
 }
