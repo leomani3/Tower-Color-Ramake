@@ -10,11 +10,37 @@ public class BallThrower : MonoBehaviour
 
     private Color[] colors;
 
+    private float pressDuration;
+    private float dragOldX;
+
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
-            Fire();
+            pressDuration += Time.deltaTime;
+
+            if (pressDuration >= 0.2f) //the user pressed long enough to trigger the camera drag move
+            {
+                if (dragOldX == 0)
+                {
+                    dragOldX = Input.mousePosition.x;
+                }
+                else
+                {
+                    transform.RotateAround(Vector3.zero, Vector3.up, Input.mousePosition.x - dragOldX);
+                    dragOldX = Input.mousePosition.x;
+                }
+            }
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (pressDuration <= 0.2f) //user taped
+            {
+                Fire();
+            }
+            pressDuration = 0;
+            dragOldX = 0;
         }
     }
 
