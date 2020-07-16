@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class TowerBlock : MonoBehaviour
 {
-    public Color color;
     public Action onDestroy;
 
+    public Color color;
     private GameObject child;
     private void Awake()
     {
@@ -23,7 +23,7 @@ public class TowerBlock : MonoBehaviour
         //Animation
         child.GetComponent<Animator>().SetTrigger("ChangeColor");
         //Set the new color of the current object 
-        SetColor(color);
+        Colorize(color);
 
         yield return new WaitForSeconds(0.05f);
 
@@ -78,7 +78,13 @@ public class TowerBlock : MonoBehaviour
         return GetComponent<MeshRenderer>().material.color;
     }
 
-    public void SetColor(Color newColor)
+    public void SetColor(Color c)
+    {
+        color = c;
+        Colorize(c);
+    }
+
+    public void Colorize(Color newColor)
     {
         GetComponent<MeshRenderer>().material.color = newColor;
         child.GetComponent<MeshRenderer>().material.color = newColor;
@@ -86,13 +92,13 @@ public class TowerBlock : MonoBehaviour
 
     public void Enable()
     {
-        SetColor(color);
+        Colorize(color);
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
     }
 
     public void Disable()
     {
-        SetColor(Color.gray);
+        Colorize(Color.gray);
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
     }
 }

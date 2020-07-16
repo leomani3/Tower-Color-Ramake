@@ -6,13 +6,22 @@ public class TowerManager : MonoBehaviour
 {
     public int playZoneLength;
     public List<TowerLine> lines;
+    public int numberOfColors;
 
     private int currentLowestActivatedLine;
+    private Color[] colors;
 
     private float timeCpt = 0;
     // Start is called before the first frame update
     void Start()
     {
+        //pick numberOfColors random colors
+        colors = new Color[numberOfColors];
+        for (int i = 0; i < numberOfColors; i++)
+        {
+            colors[i] = Color.HSVToRGB(Random.Range(0, 0.9f), 1, 1);
+        }
+
         currentLowestActivatedLine = lines.Count - playZoneLength;
 
         for (int i = 0; i < lines.Count; i++)
@@ -22,6 +31,7 @@ public class TowerManager : MonoBehaviour
             {
                 foreach (TowerBlock towerBlock in lines[i].GetComponentsInChildren<TowerBlock>())
                 {
+                    towerBlock.SetColor(colors[Random.Range(0, numberOfColors)]);
                     towerBlock.Disable();
                 }
             }
@@ -29,6 +39,7 @@ public class TowerManager : MonoBehaviour
             {
                 foreach (TowerBlock towerBlock in lines[i].GetComponentsInChildren<TowerBlock>())
                 {
+                    towerBlock.SetColor(colors[Random.Range(0, numberOfColors)]);
                     towerBlock.Enable();
                 }
             }

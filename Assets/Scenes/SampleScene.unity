@@ -22850,7 +22850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 031d4a46a10427b4883037d2992c116b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playZoneLength: 3
+  playZoneLength: 6
   lines:
   - {fileID: 1506095489}
   - {fileID: 1116178639}
@@ -22868,6 +22868,7 @@ MonoBehaviour:
   - {fileID: 1236788867}
   - {fileID: 232777797}
   - {fileID: 1678297624}
+  numberOfColors: 2
 --- !u!1001 &1785156715
 PrefabInstance:
   m_ObjectHideFlags: 0
