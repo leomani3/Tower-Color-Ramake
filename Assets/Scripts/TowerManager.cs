@@ -16,12 +16,15 @@ public class TowerManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //pick numberOfColors random colors
+        //pick numberOfColors random colors. Added some stuff to make sure every color is different enough for the others
         colors = new Color[numberOfColors];
+        float h = Random.Range(0.0f, 1.0f);
         for (int i = 0; i < numberOfColors; i++)
         {
-            colors[i] = Color.HSVToRGB(Random.Range(0, 0.9f), 1, 1);
+            h = Mathf.Repeat(h + (Random.Range(0.2f, 0.3f)), 1);
+            colors[i] = Color.HSVToRGB(h, 1, 1);
         }
+
         //pass those colors reference to the ball thrower
         FindObjectOfType<BallThrower>().Setup(colors);
 

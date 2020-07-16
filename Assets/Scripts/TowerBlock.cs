@@ -45,8 +45,10 @@ public class TowerBlock : MonoBehaviour
         //scan for neighbors
         Collider[] cols = Physics.OverlapSphere(transform.position, 1, LayerMask.GetMask("TowerBlock"));
         //Destroy the object
-        GameObject vfx = Instantiate(Resources.Load("TowerBlockDestroy"), transform.position, transform.rotation) as GameObject; //VFX
-        vfx.GetComponent<ParticleSystem>().startColor = GetColor();
+
+        //GameObject vfx = Instantiate(Resources.Load("TowerBlockDestroy"), transform.position, transform.rotation) as GameObject; //laggyyyyyyyy
+        //vfx.GetComponent<ParticleSystem>().startColor = GetColor();
+
         SoftDestroy(); //visually ans physically destroy the object
 
         yield return new WaitForSeconds(0.1f);
