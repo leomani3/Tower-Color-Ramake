@@ -11,7 +11,7 @@ public class TowerBlock : MonoBehaviour
     private GameObject cameraHolder;
     private void Awake()
     {
-        child = transform.GetChild(0).gameObject; //I created a clone of the TowerBlock as a child without the collider, rb, etc... juste to animate without breaking the physic
+        child = transform.GetChild(0).gameObject; //I created a clone of the TowerBlock as a child without the collider, rb, etc... just to animate without breaking the physic
     }
 
     private void Start()
@@ -50,7 +50,6 @@ public class TowerBlock : MonoBehaviour
         Color currentColor = color;
         //scan for neighbors
         Collider[] cols = Physics.OverlapSphere(transform.position, 1, LayerMask.GetMask("TowerBlock"));
-        //Destroy the object
 
         //GameObject vfx = Instantiate(Resources.Load("TowerBlockDestroy"), transform.position, transform.rotation) as GameObject; //laggyyyyyyyy
         //vfx.GetComponent<ParticleSystem>().startColor = GetColor();
@@ -72,7 +71,7 @@ public class TowerBlock : MonoBehaviour
     }
 
     /// <summary>
-    /// Allows to visually and physically destroy the object but it is not really destroy in the scene in case we still need the script to run.
+    /// Allows to visually and physically destroy the object but it is not really destroy in the scene in case we still need the script to run (need to do that because of the potential Coroutines still runing).
     /// </summary>
     public void SoftDestroy()
     {
@@ -98,6 +97,9 @@ public class TowerBlock : MonoBehaviour
         child.GetComponent<MeshRenderer>().material.color = newColor;
     }
 
+    /// <summary>
+    /// enabling the block by re-activating is rb and his color so it can be part of the play zone
+    /// </summary>
     public void Enable()
     {
         isEnabled = true;
@@ -105,6 +107,9 @@ public class TowerBlock : MonoBehaviour
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
     }
 
+    /// <summary>
+    /// Disable a block by turning it black and freezing is rb so it doesn't interact with anything.
+    /// </summary>
     public void Disable()
     {
         isEnabled = false;
