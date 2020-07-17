@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class BallThrower : MonoBehaviour
 {
@@ -15,10 +16,12 @@ public class BallThrower : MonoBehaviour
     public LayerMask raycastLayer;
     public List<TextMeshProUGUI> ballCountTexts;
     public int ballCount;
+    public Image nextColorCircle;
 
     private GameObject currentBall;
 
     private Color pickedColor;
+    private Color nextColor;
 
     private Color[] colors;
 
@@ -40,6 +43,10 @@ public class BallThrower : MonoBehaviour
     public void Setup(Color[] cols)
     {
         colors = cols;
+
+        nextColor = colors[Random.Range(0, colors.Length)];
+        nextColorCircle.color = nextColor;
+
         SpawnNewBall();
     }
 
@@ -86,7 +93,10 @@ public class BallThrower : MonoBehaviour
 
     public void SpawnNewBall()
     {
-        pickedColor = colors[Random.Range(0, colors.Length)];
+        pickedColor = nextColor;
+
+        nextColor = colors[Random.Range(0, colors.Length)];
+        nextColorCircle.color = nextColor;
 
         currentBall = Instantiate(ballPrefab, ballPosition.position, Quaternion.identity, transform);
         currentBall.GetComponent<Ball>().SetColor(pickedColor);
@@ -100,6 +110,7 @@ public class BallThrower : MonoBehaviour
             float gravity = ballPrefab.GetComponent<Ball>().gravity;
 
             RaycastHit hit;
+
             if (Physics.Raycast(ray, out hit, raycastLayer))
             {
                 ballCount--;
@@ -111,6 +122,7 @@ public class BallThrower : MonoBehaviour
                 Vector3 endPoint = hit.point;
 
                 float displacementY = endPoint.y - ballPosition.position.y;
+                height = Mathf.Clamp(displacementY, 3, displacementY);
                 Vector3 displacementXZ = new Vector3(endPoint.x - ballPosition.position.x, 0, endPoint.z - ballPosition.position.z);
 
                 float time = (Mathf.Sqrt(-2 * height / gravity) + Mathf.Sqrt(2 * (displacementY - height) / gravity));
@@ -118,6 +130,7 @@ public class BallThrower : MonoBehaviour
                 Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * height);
                 Vector3 velocityXZ = displacementXZ / time;
 
+                Debug.Log(gravity);
                 currentBall.GetComponent<Rigidbody>().isKinematic = false;
                 currentBall.GetComponent<Rigidbody>().velocity = velocityXZ + velocityY;
 

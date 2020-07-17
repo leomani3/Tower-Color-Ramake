@@ -56,9 +56,8 @@ public class TowerBlock : MonoBehaviour
         //vfx.GetComponent<ParticleSystem>().startColor = GetColor();
 
         SoftDestroy(); //visually ans physically destroy the object
-        Destroy(gameObject, 2);
 
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(0.03f);
 
         //recursively call the propagation on all neighbors of the same color
         foreach (Collider col in cols)

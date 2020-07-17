@@ -20,6 +20,7 @@ public class Ball : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<TowerBlock>())
         {
+            SoftDestroy();
             TowerBlock block = collision.gameObject.GetComponent<TowerBlock>();
             if (block.IsEnable)
             {
@@ -33,7 +34,6 @@ public class Ball : MonoBehaviour
                     StartCoroutine(block.PropagateColor(color));
                 }
             }
-            SoftDestroy();
             Destroy(gameObject, 2);
         }
     }
