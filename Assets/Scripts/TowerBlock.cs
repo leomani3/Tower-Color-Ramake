@@ -8,9 +8,15 @@ public class TowerBlock : MonoBehaviour
     public Color color;
     private GameObject child;
     private bool isEnabled;
+    private GameObject cameraHolder;
     private void Awake()
     {
         child = transform.GetChild(0).gameObject; //I created a clone of the TowerBlock as a child without the collider, rb, etc... juste to animate without breaking the physic
+    }
+
+    private void Start()
+    {
+        cameraHolder = GameObject.FindGameObjectWithTag("CameraHolder");
     }
 
     public IEnumerator PropagateColor(Color c)
@@ -18,7 +24,7 @@ public class TowerBlock : MonoBehaviour
         //save the current color of the object
         Color currentColor = GetColor();
         //scan for neighbors
-        Collider[] cols = Physics.OverlapSphere(transform.position, 1, LayerMask.GetMask("TowerBlock"));
+        Collider[] cols = Physics.OverlapSphere(transform.position, 0.9f, LayerMask.GetMask("TowerBlock"));
         //Animation
         child.GetComponent<Animator>().SetTrigger("ChangeColor");
         //Set the new color of the current object 
@@ -39,6 +45,7 @@ public class TowerBlock : MonoBehaviour
 
     public IEnumerator PropagateDestroy()
     {
+        cameraHolder.GetComponent<Animator>().SetBool("Shake", true);
         //save the current color of the object
         Color currentColor = GetColor();
         //scan for neighbors
@@ -51,7 +58,7 @@ public class TowerBlock : MonoBehaviour
         SoftDestroy(); //visually ans physically destroy the object
         Destroy(gameObject, 2);
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.05f);
 
         //recursively call the propagation on all neighbors of the same color
         foreach (Collider col in cols)
@@ -62,6 +69,7 @@ public class TowerBlock : MonoBehaviour
                 StartCoroutine(neighbor.PropagateDestroy());
             }
         }
+        cameraHolder.GetComponent<Animator>().SetBool("Shake", false);
     }
 
     /// <summary>

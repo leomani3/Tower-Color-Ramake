@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class BallThrower : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class BallThrower : MonoBehaviour
     public Transform ballPosition;
     public GameObject ballPrefab;
     public LayerMask raycastLayer;
+    public List<TextMeshProUGUI> ballCountTexts;
+    public int ballCount;
 
     private GameObject currentBall;
 
@@ -19,10 +22,21 @@ public class BallThrower : MonoBehaviour
 
     private Color[] colors;
 
+    private TowerManager towerManager;
+
     private float targetElevation;
 
     private float pressDuration;
     private float dragOldX;
+
+    private void Start()
+    {
+        towerManager = FindObjectOfType<TowerManager>();
+        foreach (TextMeshProUGUI text in ballCountTexts)
+        {
+            text.text = ballCount.ToString();
+        }
+    }
     public void Setup(Color[] cols)
     {
         colors = cols;
@@ -80,28 +94,41 @@ public class BallThrower : MonoBehaviour
 
     public void Launch()
     {
-        Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
-        float gravity = ballPrefab.GetComponent<Ball>().gravity;
-
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, raycastLayer))
+        if(ballCount > 0)
         {
-            Vector3 endPoint = hit.point;
+            Ray ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+            float gravity = ballPrefab.GetComponent<Ball>().gravity;
 
-            float displacementY = endPoint.y - ballPosition.position.y;
-            Vector3 displacementXZ = new Vector3(endPoint.x - ballPosition.position.x, 0, endPoint.z - ballPosition.position.z);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, raycastLayer))
+            {
+                ballCount--;
+                foreach (TextMeshProUGUI text in ballCountTexts)
+                {
+                    text.text = ballCount.ToString();
+                }
 
-            float time = (Mathf.Sqrt(-2 * height / gravity) + Mathf.Sqrt(2 * (displacementY - height) / gravity));
+                Vector3 endPoint = hit.point;
 
-            Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * height);
-            Vector3 velocityXZ = displacementXZ / time;
+                float displacementY = endPoint.y - ballPosition.position.y;
+                Vector3 displacementXZ = new Vector3(endPoint.x - ballPosition.position.x, 0, endPoint.z - ballPosition.position.z);
 
-            currentBall.GetComponent<Rigidbody>().isKinematic = false;
-            currentBall.GetComponent<Rigidbody>().velocity = velocityXZ + velocityY;
+                float time = (Mathf.Sqrt(-2 * height / gravity) + Mathf.Sqrt(2 * (displacementY - height) / gravity));
 
-            currentBall.transform.parent = transform.parent;
+                Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * height);
+                Vector3 velocityXZ = displacementXZ / time;
 
-            SpawnNewBall();
+                currentBall.GetComponent<Rigidbody>().isKinematic = false;
+                currentBall.GetComponent<Rigidbody>().velocity = velocityXZ + velocityY;
+
+                currentBall.transform.parent = transform.parent;
+
+                SpawnNewBall();
+            }
+            if (ballCount == 0)
+            {
+                StartCoroutine(towerManager.WaitToSeeIfLoss());
+            }
         }
     }
 }

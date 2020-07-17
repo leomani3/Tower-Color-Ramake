@@ -1,15 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using System.Runtime.InteropServices.WindowsRuntime;
+using UnityEngine.SceneManagement;
 
 public class TowerManager : MonoBehaviour
 {
     public int playZoneLength;
     public List<TowerLine> lines;
     public int numberOfColors;
+    public List<GameObject> confettis;
+    public int winLevel;
+    public GameObject tryAgainText;
+    public GameObject levelCompleteText;
+    public GameObject tapToContinueText;
 
     private int currentLowestActivatedLine;
+    private int currentHighestActivatedLine;
     private Color[] colors;
+
+    private bool won = false;
+    private bool lost = false;
 
     private BallThrower ballThrower;
 
@@ -33,6 +45,7 @@ public class TowerManager : MonoBehaviour
         FindObjectOfType<BallThrower>().Setup(colors);
 
         currentLowestActivatedLine = lines.Count - 1 - playZoneLength;
+        currentHighestActivatedLine = lines.Count - 1;
 
         ballThrower.SetCameraElevation(lines[currentLowestActivatedLine + playZoneLength - 1].transform.position.y);
 
@@ -61,21 +74,77 @@ public class TowerManager : MonoBehaviour
         }
     }
 
-    public void LowerPlayZone()
+    private void Update()
     {
-        if (currentLowestActivatedLine > 0)
+        if (won)
         {
-            currentLowestActivatedLine--;
-            foreach (TowerBlock towerBlock in lines[currentLowestActivatedLine].GetComponentsInChildren<TowerBlock>())
+            ballThrower.transform.RotateAround(Vector3.zero, Vector3.up, 10 * Time.deltaTime);
+            if (Input.GetMouseButtonDown(0))
             {
-                towerBlock.Enable();
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
-
-        //prevents the camera from going too low down.
-        if (currentLowestActivatedLine > 3)
+        else if(lost && Input.GetMouseButtonDown(0))
         {
-            ballThrower.SetCameraElevation(lines[currentLowestActivatedLine + playZoneLength - 1].transform.position.y);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
+
+    public void LowerPlayZone()
+    {
+        if (!won)
+        {
+            currentHighestActivatedLine--;
+
+            //WIN CONDITION
+            if (currentHighestActivatedLine <= winLevel)
+            {
+                int levelIndex = PlayerPrefs.GetInt("LevelIndex");
+                won = true;
+                levelCompleteText.SetActive(true);
+                levelCompleteText.GetComponent<TextMeshProUGUI>().text = "Level " + levelIndex + " completed !";
+                tapToContinueText.SetActive(true);
+                foreach (GameObject go in confettis)
+                {
+                    go.SetActive(true);
+                }
+
+                levelIndex++;
+                PlayerPrefs.SetInt("LevelIndex", levelIndex);
+            }
+
+            if (currentLowestActivatedLine > 0)
+            {
+                currentLowestActivatedLine--;
+                foreach (TowerBlock towerBlock in lines[currentLowestActivatedLine].GetComponentsInChildren<TowerBlock>())
+                {
+                    towerBlock.Enable();
+                }
+            }
+
+            //prevents the camera from going too low down.
+            if (currentLowestActivatedLine > 3)
+            {
+                ballThrower.SetCameraElevation(lines[currentLowestActivatedLine + playZoneLength - 1].transform.position.y);
+            }
+        }
+    }
+
+    public IEnumerator WaitToSeeIfLoss()
+    {
+        float timeCount = 0;
+        while (timeCount <= 5)
+        {
+            timeCount += Time.deltaTime;
+            yield return null;
+        }
+
+        if (currentHighestActivatedLine >= winLevel)
+        {
+            //LOSS
+            lost = true;
+            tryAgainText.SetActive(true);
+            tapToContinueText.SetActive(true);
         }
     }
 }
