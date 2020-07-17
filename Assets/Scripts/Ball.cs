@@ -11,6 +11,7 @@ public class Ball : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //I wanted to have better controle on the ball so I decided to make it use its own gravity
         if(!GetComponent<Rigidbody>().isKinematic)
         {
             GetComponent<Rigidbody>().AddForce(new Vector3(0, gravity, 0));
@@ -19,18 +20,20 @@ public class Ball : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        //The ball hits a block
         if (collision.gameObject == target && collision.gameObject.GetComponent<TowerBlock>())
         {
+            //make it disapear
             SoftDestroy();
             TowerBlock block = collision.gameObject.GetComponent<TowerBlock>();
             if (block.IsEnable)
             {
+                //Good color -> propagate destroy
                 if (block.color == color)
                 {
                     StartCoroutine(block.PropagateDestroy());
-
                 }
-                else
+                else //Wrong color -> propagate color
                 {
                     StartCoroutine(block.PropagateColor(color));
                 }

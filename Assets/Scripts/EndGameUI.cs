@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -39,11 +38,5 @@ public class EndGameUI : MonoBehaviour
             }
             yield return new WaitForSeconds(0.1f);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

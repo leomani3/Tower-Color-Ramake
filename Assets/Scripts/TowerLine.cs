@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TowerLine : MonoBehaviour
@@ -8,7 +6,6 @@ public class TowerLine : MonoBehaviour
     public LayerMask layerBlock;
     public Action onEmpty;
 
-    private TowerManager towerManager;
     private bool triggered = false;
     private float timeCount = 0;
 

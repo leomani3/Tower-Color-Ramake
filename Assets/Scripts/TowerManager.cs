@@ -133,12 +133,6 @@ public class TowerManager : MonoBehaviour
                     towerBlock.Enable();
                 }
             }
-
-            //prevents the camera from going too low down.
-            /*if (currentLowestActivatedLine > winLevel)
-            {
-                ballThrower.SetCameraElevation(lines[currentLowestActivatedLine + playZoneLength - 1].transform.position.y);
-            }*/
             ballThrower.SetCameraElevation(lines[currentLowestActivatedLine + playZoneLength - 1].transform.position.y);
         }
     }
