@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class TowerManager : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class TowerManager : MonoBehaviour
     public GameObject tryAgainText;
     public GameObject levelCompleteText;
     public GameObject tapToContinueText;
+    public GameObject endGameUI;
 
     private int currentLowestActivatedLine;
     private int currentHighestActivatedLine;
@@ -26,6 +28,12 @@ public class TowerManager : MonoBehaviour
     private BallThrower ballThrower;
 
     private float timeCpt = 0;
+
+    private void Awake()
+    {
+        Application.targetFrameRate = 60;
+        Input.multiTouchEnabled = false;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -99,6 +107,10 @@ public class TowerManager : MonoBehaviour
             //WIN CONDITION
             if (currentHighestActivatedLine <= winLevel)
             {
+                //trigger end game UI
+                endGameUI.SetActive(true);
+                endGameUI.GetComponent<EndGameUI>().ballsLeft = ballThrower.ballCount;
+
                 int levelIndex = PlayerPrefs.GetInt("LevelIndex");
                 won = true;
                 levelCompleteText.SetActive(true);
@@ -123,19 +135,22 @@ public class TowerManager : MonoBehaviour
             }
 
             //prevents the camera from going too low down.
-            if (currentLowestActivatedLine > 3)
+            /*if (currentLowestActivatedLine > winLevel)
             {
                 ballThrower.SetCameraElevation(lines[currentLowestActivatedLine + playZoneLength - 1].transform.position.y);
-            }
+            }*/
+            ballThrower.SetCameraElevation(lines[currentLowestActivatedLine + playZoneLength - 1].transform.position.y);
         }
     }
 
-    public IEnumerator WaitToSeeIfLoss()
+    public IEnumerator WaitToSeeIfLoss(Image circle)
     {
+        circle.gameObject.SetActive(true);
         float timeCount = 0;
         while (timeCount <= 5)
         {
             timeCount += Time.deltaTime;
+            circle.fillAmount = 1 - (timeCount / 5);
             yield return null;
         }
 

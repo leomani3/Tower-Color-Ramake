@@ -14,9 +14,10 @@ public class BallThrower : MonoBehaviour
     public Transform ballPosition;
     public GameObject ballPrefab;
     public LayerMask raycastLayer;
-    public List<TextMeshProUGUI> ballCountTexts;
+    public TextMeshProUGUI ballCountText;
     public int ballCount;
     public Image nextColorCircle;
+    public Image waitToSeeCircle;
 
     private GameObject currentBall;
 
@@ -34,11 +35,10 @@ public class BallThrower : MonoBehaviour
 
     private void Start()
     {
+        waitToSeeCircle.transform.position = Camera.main.WorldToScreenPoint(ballPosition.position);
+        ballCountText.transform.position = Camera.main.WorldToScreenPoint(ballPosition.position);
         towerManager = FindObjectOfType<TowerManager>();
-        foreach (TextMeshProUGUI text in ballCountTexts)
-        {
-            text.text = ballCount.ToString();
-        }
+        ballCountText.text = ballCount.ToString();
     }
     public void Setup(Color[] cols)
     {
@@ -113,11 +113,10 @@ public class BallThrower : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, raycastLayer))
             {
+                GameObject target = hit.collider.gameObject;
+                currentBall.GetComponent<Ball>().SetTarget(target);
                 ballCount--;
-                foreach (TextMeshProUGUI text in ballCountTexts)
-                {
-                    text.text = ballCount.ToString();
-                }
+                ballCountText.text = ballCount.ToString();
 
                 Vector3 endPoint = hit.point;
 
@@ -130,7 +129,6 @@ public class BallThrower : MonoBehaviour
                 Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * height);
                 Vector3 velocityXZ = displacementXZ / time;
 
-                Debug.Log(gravity);
                 currentBall.GetComponent<Rigidbody>().isKinematic = false;
                 currentBall.GetComponent<Rigidbody>().velocity = velocityXZ + velocityY;
 
@@ -140,7 +138,7 @@ public class BallThrower : MonoBehaviour
             }
             if (ballCount == 0)
             {
-                StartCoroutine(towerManager.WaitToSeeIfLoss());
+                StartCoroutine(towerManager.WaitToSeeIfLoss(waitToSeeCircle));
             }
         }
     }

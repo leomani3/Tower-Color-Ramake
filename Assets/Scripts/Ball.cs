@@ -7,6 +7,7 @@ public class Ball : MonoBehaviour
 {
     public float gravity;
     private Color color;
+    private GameObject target;
 
     private void FixedUpdate()
     {
@@ -18,7 +19,7 @@ public class Ball : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.GetComponent<TowerBlock>())
+        if (collision.gameObject == target && collision.gameObject.GetComponent<TowerBlock>())
         {
             SoftDestroy();
             TowerBlock block = collision.gameObject.GetComponent<TowerBlock>();
@@ -48,5 +49,10 @@ public class Ball : MonoBehaviour
     {
         color = c;
         GetComponent<MeshRenderer>().material.color = c;
+    }
+
+    public void SetTarget(GameObject go)
+    {
+        target = go;
     }
 }

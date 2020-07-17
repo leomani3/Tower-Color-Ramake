@@ -47,7 +47,7 @@ public class TowerBlock : MonoBehaviour
     {
         cameraHolder.GetComponent<Animator>().SetBool("Shake", true);
         //save the current color of the object
-        Color currentColor = GetColor();
+        Color currentColor = color;
         //scan for neighbors
         Collider[] cols = Physics.OverlapSphere(transform.position, 1, LayerMask.GetMask("TowerBlock"));
         //Destroy the object

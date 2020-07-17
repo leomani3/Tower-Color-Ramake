@@ -138,7 +138,7 @@ GameObject:
   - component: {fileID: 2450160747926319709}
   - component: {fileID: 1612719211127580729}
   - component: {fileID: 429899699380660193}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: TowerBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
