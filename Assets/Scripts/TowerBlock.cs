@@ -5,10 +5,9 @@ using UnityEngine;
 
 public class TowerBlock : MonoBehaviour
 {
-    public Action onDestroy;
-
     public Color color;
     private GameObject child;
+    private bool isEnabled;
     private void Awake()
     {
         child = transform.GetChild(0).gameObject; //I created a clone of the TowerBlock as a child without the collider, rb, etc... juste to animate without breaking the physic
@@ -50,6 +49,7 @@ public class TowerBlock : MonoBehaviour
         //vfx.GetComponent<ParticleSystem>().startColor = GetColor();
 
         SoftDestroy(); //visually ans physically destroy the object
+        Destroy(gameObject, 2);
 
         yield return new WaitForSeconds(0.1f);
 
@@ -69,7 +69,6 @@ public class TowerBlock : MonoBehaviour
     /// </summary>
     public void SoftDestroy()
     {
-        onDestroy?.Invoke();
         GetComponent<MeshRenderer>().enabled = false;
         GetComponent<MeshCollider>().enabled = false;
         transform.GetChild(0).gameObject.SetActive(false);
@@ -94,13 +93,20 @@ public class TowerBlock : MonoBehaviour
 
     public void Enable()
     {
+        isEnabled = true;
         Colorize(color);
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
     }
 
     public void Disable()
     {
-        Colorize(Color.gray);
+        isEnabled = false;
+        Colorize(Color.black);
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+    }
+
+    public bool IsEnable
+    {
+        get { return isEnabled; }
     }
 }

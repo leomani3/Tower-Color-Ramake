@@ -5,36 +5,25 @@ using UnityEngine;
 
 public class TowerLine : MonoBehaviour
 {
+    public LayerMask layerBlock;
     public Action onEmpty;
 
-    private int blockCount = 0;
     private TowerManager towerManager;
     private bool triggered = false;
+    private float timeCount = 0;
 
-    private void Start()
+    private void Update()
     {
-        foreach (TowerBlock towerBlock in GetComponentsInChildren<TowerBlock>())
+        timeCount += Time.deltaTime;
+        if (timeCount >= 0.5f) //prevents from polling every frame for nothing
         {
-            towerBlock.onDestroy += DecreaseBlockCount;
+            //check for blocks inside
+            if (Physics.OverlapBox(transform.position, new Vector3(10, 0.1f, 10), Quaternion.Euler(Vector3.up), layerBlock).Length <= 0 && !triggered)
+            {
+                onEmpty?.Invoke();
+                triggered = true;
+                timeCount = 0;
+            }
         }
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        blockCount++;
-    }
-
-    public void DecreaseBlockCount()
-    {
-        blockCount--;
-        if (blockCount == 0 && !triggered)
-        {
-            triggered = true;
-            onEmpty?.Invoke();
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        DecreaseBlockCount();
     }
 }

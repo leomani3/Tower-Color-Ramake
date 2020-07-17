@@ -11,11 +11,15 @@ public class TowerManager : MonoBehaviour
     private int currentLowestActivatedLine;
     private Color[] colors;
 
+    private BallThrower ballThrower;
+
     private float timeCpt = 0;
 
     // Start is called before the first frame update
     void Start()
     {
+        ballThrower = FindObjectOfType<BallThrower>();
+
         //pick numberOfColors random colors. Added some stuff to make sure every color is different enough for the others
         colors = new Color[numberOfColors];
         float h = Random.Range(0.0f, 1.0f);
@@ -28,7 +32,9 @@ public class TowerManager : MonoBehaviour
         //pass those colors reference to the ball thrower
         FindObjectOfType<BallThrower>().Setup(colors);
 
-        currentLowestActivatedLine = lines.Count - playZoneLength;
+        currentLowestActivatedLine = lines.Count - 1 - playZoneLength;
+
+        ballThrower.SetCameraElevation(lines[currentLowestActivatedLine + playZoneLength - 1].transform.position.y);
 
         for (int i = 0; i < lines.Count; i++)
         {
@@ -64,6 +70,12 @@ public class TowerManager : MonoBehaviour
             {
                 towerBlock.Enable();
             }
+        }
+
+        //prevents the camera from going too low down.
+        if (currentLowestActivatedLine > 3)
+        {
+            ballThrower.SetCameraElevation(lines[currentLowestActivatedLine + playZoneLength - 1].transform.position.y);
         }
     }
 }
