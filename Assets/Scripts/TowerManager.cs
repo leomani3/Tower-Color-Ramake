@@ -145,7 +145,7 @@ public class TowerManager : MonoBehaviour
             yield return null;
         }
 
-        if (currentHighestActivatedLine >= winLevel)
+        if (currentHighestActivatedLine > winLevel)
         {
             //LOSS
             lost = true;
