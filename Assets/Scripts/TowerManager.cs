@@ -113,9 +113,6 @@ public class TowerManager : MonoBehaviour
 
                 int levelIndex = PlayerPrefs.GetInt("LevelIndex");
                 won = true;
-                levelCompleteText.SetActive(true);
-                levelCompleteText.GetComponent<TextMeshProUGUI>().text = "Level " + levelIndex + " completed !";
-                tapToContinueText.SetActive(true);
                 foreach (GameObject go in confettis)
                 {
                     go.SetActive(true);

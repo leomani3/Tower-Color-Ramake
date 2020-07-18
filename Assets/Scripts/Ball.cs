@@ -21,11 +21,11 @@ public class Ball : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         //The ball hits a block
-        if (collision.gameObject == target && collision.gameObject.GetComponent<TowerBlock>())
+        if (collision.gameObject.GetComponent<TowerBlock>())
         {
             //make it disapear
             SoftDestroy();
-            TowerBlock block = collision.gameObject.GetComponent<TowerBlock>();
+            TowerBlock block = target.GetComponent<TowerBlock>();
             if (block.IsEnable)
             {
                 //Good color -> propagate destroy

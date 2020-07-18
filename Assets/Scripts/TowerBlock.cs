@@ -56,9 +56,9 @@ public class TowerBlock : MonoBehaviour
 
         SoftDestroy(); //visually ans physically destroy the object
 
-        yield return new WaitForSeconds(0.03f);
+        yield return new WaitForSeconds(0.02f);
 
-        //recursively call the propagation on all neighbors of the same color
+        //recursively call the propagation on all neighbors of the same colors
         foreach (Collider col in cols)
         {
             TowerBlock neighbor = col.GetComponent<TowerBlock>();
@@ -75,8 +75,8 @@ public class TowerBlock : MonoBehaviour
     /// </summary>
     public void SoftDestroy()
     {
-        GetComponent<MeshRenderer>().enabled = false;
         GetComponent<MeshCollider>().enabled = false;
+        GetComponent<MeshRenderer>().enabled = false;
         transform.GetChild(0).gameObject.SetActive(false);
     }
 
@@ -104,17 +104,17 @@ public class TowerBlock : MonoBehaviour
     {
         isEnabled = true;
         Colorize(color);
-        GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+        GetComponent<Rigidbody>().isKinematic = false;
     }
 
     /// <summary>
-    /// Disable a block by turning it black and freezing is rb so it doesn't interact with anything.
+    /// Disable a block by turning it black and making it kinematic
     /// </summary>
     public void Disable()
     {
         isEnabled = false;
         Colorize(Color.black);
-        GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+        GetComponent<Rigidbody>().isKinematic = true;
     }
 
     public bool IsEnable
